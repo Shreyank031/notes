@@ -222,7 +222,7 @@ resources:
 
 - By default, Kubernetes does not have a CPU or memory request or limit set. So this means that any pod can consume as much resources as required on any node and suffocate other pods or processes that are running on the node of resources.
 
-[req_limit.img] attached
+<img width="928" alt="req_limit" src="https://github.com/Shreyank031/notes/assets/115367978/151f28b0-9641-4b13-8204-96c0b31114a7">
 
 ###### By default, Kubernetes does not have resource requests or limits configured for pods. But then how do we ensure that every pod created has some default set?
 
