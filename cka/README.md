@@ -330,7 +330,105 @@ Edit Deployments
 
 With Deployments you can easily edit any field/property of the POD template. Since the pod template is a child of the deployment specification,  with every change the deployment will automatically delete and create a new pod with the new changes. So if you are asked to edit a property of a POD part of a deployment you may do that simply by running the command
 
-kubectl edit deployment my-deployment
+`kubectl edit deployment my-deployment`
+
+----------------------------------------------------------------------------------------------------------
+
+### Daemon Sets
+
+Detailed explaination in k8s doc
+k8s doc [here](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/)
+
+- DaemonSets are like ReplicaSets, as in it helps you deploy multiple instances of pods. But it runs one copy of your pod on each node in your cluster.
+- Whenever a new node is added to the cluster, a replica of the pod is automatically added to that node. And when a node is removed the pod is automatically removed.
+- The DaemonSet ensures that one copy of the pod is always present in all nodes in the cluster.
+
+- So what are some use cases of DaemonSets? Say you would like to deploy a monitoring agent or log collector on each of your nodes in the cluster, so you can monitor your cluster better. 
+- A DaemonSet is perfect for that as it can deploy your monitoring agent in the form of a pod in all the nodes in your cluster. Then you don't have to worry about adding or removing monitoring agents from these nodes when there are changes in your cluster as the DaemonSet will take care of that for you.
+ 
+Usecases of Daemon sets:
+
+- kube-proxy
+- Networking soln like -> Vivenet
+
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: monitoring-daemon
+  namespace: kube-systemspec:
+  selector:
+    matchLabels:
+      name: monitoring-agent
+  template:
+    metadata:
+      labels:
+        name: monitoring-agent
+    spec:
+      containers:
+        - name: monitoring-agent
+          image: monitoring-agent
+```
+
+```bash
+kubectl create -f <yaml_file.yaml>
+kubectl get ds
+kubectl describe daemonsets <name>
+```
+
+----------------------------------------------------------------------------------------------------------
+
+### STatic PODS:
+
+k8s doc [here](https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/)
+
+- Static Pods are managed directly by the kubelet daemon on a specific node, without the API server observing them. Unlike Pods that are managed by the control plane (for example, a Deployment); instead, the kubelet watches each static Pod (and restarts it if it fails).
+
+- The kubelet automatically tries to create a mirror Pod on the Kubernetes API server for each static Pod. This means that the Pods running on a node are visible on the API server, but cannot be controlled from there.
+
+- Pods that are created by the kubelet on its own without the intervention from the API server or rest of the Kubernetes cluster components are known as static Pods.
+
+>You can only create pods this way, but not deployments or rs...by placing defination file in a designated directory.
+
+- The kubelet works at a Pod level and can only understand Pods, which is why it is able to create static Pods this way.
+
+- Now one way to figure out, or you know differentiate a static pod from the other pods is to look at its name and at the end you'll have the node name appended to it. eg,. `kube-controller-manager-controlplane` `kube-scheduler-controlplane`
+- or `kubectl get pods/<pod_name> -n kube-system -o yaml`. And look at the `ownerReferences` section. You will find ->
+```yaml
+
+ownerReferences:
+- apiVersion: v1
+  kind: Node #this one
+  name: controlplane
+```
+
+
+- path: `/etc/kubernetes/manifest`
+
+```bash
+# Run this command on the node where kubelet is running
+mkdir -p /etc/kubernetes/manifests/
+cat <<EOF >/etc/kubernetes/manifests/static-web.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: static-web
+  labels:
+    role: myrole
+spec:
+  containers:
+    - name: web
+      image: nginx
+      ports:
+        - name: web
+          containerPort: 80
+          protocol: TCP
+EOF
+```
+
+k8s doc [here](https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/#configuration-files)
+
+
 
 
 
