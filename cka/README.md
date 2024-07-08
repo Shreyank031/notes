@@ -426,8 +426,53 @@ spec:
 EOF
 ```
 
+> `cat /var/lib/kubelet/config.yaml`
+> `kubectl get events`
+
 k8s doc [here](https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/#configuration-files)
 
+------------------------------------------------------------------------
+
+#### Configure Multiple Schedulers
+
+Kubernetes ships with a default scheduler. If the default scheduler does not suit your needs you can implement your own scheduler. Moreover, you can even run multiple schedulers simultaneously alongside the default scheduler and instruct Kubernetes what scheduler to use for each of your pods.
+
+link for k8s doc [here](https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/)
+
+[https://arc.net/l/quote/ymxirdfj](here)
+
+> `kubectl create configmap <config_map_name> --from-file=/path/to/yaml/manifest -n <namespace>`
+
+#### Pod priority
+
+when the pods are created, the pods end up in a scheduling queue. So this is where the pods wait to be scheduled. At this stage, pods are sorted based on the priority defined on the pods.
+
+- Pods can have priority. Priority indicates the importance of a Pod relative to other Pods. If a Pod cannot be scheduled, the scheduler tries to preempt (evict) lower priority Pods to make scheduling of the pending Pod possible.
+
+
+k8s doc [here](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption)
+
+
+```yaml
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 1000000
+globalDefault: false
+description: "This priority class should be used for XYZ service pods only."
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  priorityClassName: high-priority
+  containers:
+  - name: nginx
+    image: nginx
+```
 
 
 
