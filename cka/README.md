@@ -452,6 +452,9 @@ when the pods are created, the pods end up in a scheduling queue. So this is whe
 
 k8s doc [here](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption)
 
+
+<img width="1259" alt="scheduling" src="https://github.com/Shreyank031/notes/assets/115367978/21bcb87f-08e4-4a66-82da-7aa51cc56ff2">
+
 - So, to set a priority, you must first create a priority class that looks like this and you should set it a name and set it a priority value.
 - In this case, it's set to 1 million so that's really high priority. So, this is how pods with higher priority gets to the beginning of the queue to be scheduled first. 
 - And so that sorting happens in this scheduling phase. Then, our pod enters the filter phase. This is where nodes that cannot run the pod are filtered out.
@@ -484,6 +487,7 @@ spec:
 
 #### Scheduling plugins and Extension Points
 
+<img width="1339" alt="scheduling_plugin_extension_point" src="https://github.com/Shreyank031/notes/assets/115367978/87a57499-9db8-4736-b919-42b02aca30d2">
 
 
 
