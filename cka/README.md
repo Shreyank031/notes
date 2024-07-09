@@ -452,6 +452,14 @@ when the pods are created, the pods end up in a scheduling queue. So this is whe
 
 k8s doc [here](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption)
 
+- So, to set a priority, you must first create a priority class that looks like this and you should set it a name and set it a priority value.
+- In this case, it's set to 1 million so that's really high priority. So, this is how pods with higher priority gets to the beginning of the queue to be scheduled first. 
+- And so that sorting happens in this scheduling phase. Then, our pod enters the filter phase. This is where nodes that cannot run the pod are filtered out.
+
+- So, in our case, the first two nodes do not have sufficient resources so do not have 10 CPU remaining so they are filtered out. 
+- The next phase is the scoring phase. So this is where nodes are scored with different weights. From the two remaining nodes, the scheduler associates a score to each node based on the free space that it will have after reserving the CPU required for that pod. 
+- So, in this case, the first one has two left and the second node will have six left. So, the second node gets a higher score. And so, that's the node that gets picked up. 
+- And finally, in the binding phase, this is where the pod is finally bound to a node with the highest score.
 
 ```yaml
 ---
@@ -474,6 +482,7 @@ spec:
     image: nginx
 ```
 
+#### Scheduling plugins and Extension Points
 
 
 
