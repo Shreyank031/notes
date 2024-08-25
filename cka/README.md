@@ -485,9 +485,13 @@ spec:
     image: nginx
 ```
 
+#### Scheduling plugins and Extension Points
+
+<img width="1339" alt="scheduling_plugin_extension_point" src="https://github.com/Shreyank031/notes/assets/115367978/87a57499-9db8-4736-b919-42b02aca30d2">
+
 -----
 
-#Fever-break
+#Fever-break and got busy in work
 
 
 -----
@@ -560,7 +564,6 @@ k8s ConfigMap doc [here](https://kubernetes.io/docs/concepts/configuration/confi
 
 
 
-<img width="1339" alt="scheduling_plugin_extension_point" src="https://github.com/Shreyank031/notes/assets/115367978/87a57499-9db8-4736-b919-42b02aca30d2">
 
 
 
