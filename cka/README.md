@@ -485,7 +485,80 @@ spec:
     image: nginx
 ```
 
-#### Scheduling plugins and Extension Points
+-----
+
+#Fever-break
+
+
+-----
+
+### Logging and Monitoring
+
+ - Node-level metrics, such as the number of nodes in the cluster, how many of them are healthy, as well as performance metrics such as CPU, memory, network, and disc utilization, as well as pod-level metrics, such as the number of pods, and the performance metrics of each pod, such as the CPU and memory consumption on them. So we need a solution that will monitor these metrics, store them, and provide analytics around this data.
+
+- Kubernetes does not come with a full-featured built-in monitoring solution.
+
+- However, there are a number of open-source solutions available today such as Metrics Server, Prometheus, the Elastic Stack,
+
+- The **Metrics Server** retrieves metrics from each of the Kubernetes nodes and pods, aggregates them, and stores them in memory.
+
+- Metrics Server is only an in-memory monitoring solution and does not store the metrics on the disk.
+
+- Kubernetes runs an agent on each node known as the kubelet, which is responsible for receiving instructions from the Kubernetes API master server and running pods on the nodes. 
+
+- The kubelet also contains a sub component known as the cAdvisor or Container Advisor. cAdvisor is responsible for retrieving performance metrics from pods and exposing them through the kubelet API to make the metrics available for the Metrics Server.
+
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability-1.21+.yaml
+```
+
+Troubleshoot the error(I encountered this error): `Warning  Unhealthy  8s (x11 over 98s)  kubelet Readiness probe failed: HTTP probe failed with statuscode: 500`
+[here](https://github.com/kubernetes-sigs/metrics-server/issues/812#issuecomment-907586608)
+
+
+### Rolling updates and Rollbackc
+
+```bash
+kubectl rollout status deployment <deployment_name> -n <namespace>
+kubectl rollout restart deployment <deployment_name> -n <namespace>
+kubectl rollout history deployment <deployment_name> -n <namespace>
+kubectl rollout undo deployment/<deployment_name> -n <namespace> # Rolback to the previous state of deployment
+
+```
+
+### ConfigMap in k8s
+
+- A ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.
+- Use a ConfigMap for setting configuration data separately from application code.
+- Unlike most Kubernetes objects that have a spec, a ConfigMap has data and binaryData fields
+- ConfigMaps and Pods : The Pod and the ConfigMap must be in the same namespace.
+- Mounted ConfigMaps are updated automatically
+
+```bash
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-demo
+data:
+  # property-like keys; each key maps to a simple value
+  player_initial_lives: "3"
+  ui_properties_file_name: "user-interface.properties"
+
+  # file-like keys
+  game.properties: |
+    enemy.types=aliens,monsters
+    player.maximum-lives=5    
+  user-interface.properties: |
+    color.good=purple
+    color.bad=yellow
+    allow.textmode=true    
+```
+
+>Note: `kubectl replace --force -f /tmp/kubectl-edit-189876778868769.yaml`
+
+k8s ConfigMap doc [here](https://kubernetes.io/docs/concepts/configuration/configmap/)
+
+
 
 <img width="1339" alt="scheduling_plugin_extension_point" src="https://github.com/Shreyank031/notes/assets/115367978/87a57499-9db8-4736-b919-42b02aca30d2">
 
