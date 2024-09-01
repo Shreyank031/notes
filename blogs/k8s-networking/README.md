@@ -1,6 +1,6 @@
 ## Networkng in kubernetes
 
-Full structured blog written by me [](here)
+Full structured blog written by me [here](https://medium.com/@shreysms31/networking-in-kubernetes-130c6ac5b616)
 
 1. Container to Container Communication
 2. Pod to Pod communication
