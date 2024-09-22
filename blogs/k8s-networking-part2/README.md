@@ -1,6 +1,6 @@
 ## Networking in Kubernetes : Part-2 (with Cilium)
 
-I have published structured blog in **medium**. Click [here][https://medium.com/@shreysms31/networking-in-kubernetes-part-2-with-cilium-bc85be2cb3bc) to read.
+I have published structured blog in **medium**. Click [here](https://medium.com/@shreysms31/networking-in-kubernetes-part-2-with-cilium-bc85be2cb3bc) to read.
 
 
 Before we talk about Cilium, I have to mention eBPF briefly. Cilium uses eBPF to provide secure and observe network connectivity between workloads
