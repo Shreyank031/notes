@@ -7,6 +7,9 @@ Before we talk about Cilium, I have to mention eBPF briefly. Cilium uses eBPF to
 
 - So basically what eBPF allows us to do is, it allows us to run sandbox programs in the Linux Kernel without going back and forth between kernel space and user space, which is what ip tables do Below image shows you the difference between userspace and kernel space.
 
+![image](https://github.com/user-attachments/assets/d3d315cc-7264-4b66-8334-ab9e3173f5bf)
+
+
 - So kernel is basically a layer between hardware and your applications. What it does is it can handle networking, memory and process management files and so on. 
 
 - Any of your application mostly run in user-space with unprivilaged mode meaning that you can't directly access or interact with hardware. However what you can do is you can access the kernel functionalites through system calls (sys calls).
@@ -16,9 +19,17 @@ Before we talk about Cilium, I have to mention eBPF briefly. Cilium uses eBPF to
 - The kernel also supports BPF hooks in the networking stacks(we'll talk specifically about networking). You can think of a different event points or hooks where you can attach your programs and then those programs will be executed by the kernel when that event happens. So if we talk about network packets instead of like processing the packets through the chains and rules and IP tables in the user space what we can do is we can write a program and attach that program to a specific hook in a kernel so those programs are automatically executed. 
 For example a hook when traffic enters or when the traffic is exiting. Instead of writing the rules in the user space and processing them there, you can do it directly in the kernel.
 
+![image](https://github.com/user-attachments/assets/b1de4777-3845-4894-a05e-3f071493a37d)
+
+
 If you look at the diagram below, you can see the crude packet flow, so when the process makes the requests the process will flow through the IP tables to the virtual interface and  the ip tables  on the nodes to reach the nodes interface.
 
+
+
 What eBPF allows us to do is it allows us to bypass those iptables that are defined in the userspace and do everything in kernel with attached programs to the kernel hooks.
+
+![image](https://github.com/user-attachments/assets/383f39e0-32ae-4c00-a9ab-8701bed79a55)
+
 
 
 ### Finally Cilium. 
@@ -33,6 +44,9 @@ Cilium Features:
 ### Building Blocks of Cilium.
 
 - Cilium agent: They run as a daemonsets. There is one agent per node. Think of it like kube-proxy one per node. That cilium agent talks to kube-api server, it interacts with the cilium kernel.  It loads the eBPF programs, updates the eBPF maps, so maps are the way to store exchange information. It also talks to cilium cni plugin and gets notified whenever a new workload gets created or deleted. Cilium agent is the one who launches the envoy proxy whenever it is needed. There is a L7 Policy that we create, cilium agent is going to make sure to launch an envoy proxy to process the L7 requests.
+
+  ![image](https://github.com/user-attachments/assets/f686aa14-2e54-410c-a2bc-382b5bd1ed1f)
+
 
 - CNI pluging: Basically installs the CNI onto the host, configures the nodes cni to use the plugin and talks to the cilium agent using socket.
 
@@ -56,6 +70,9 @@ There is also the kubernetes host, CRD-backed, AWS ENI and so on.
 - In a high level, we can break the resource into 3 parts, `pod selector`, `ingress` and `egress` policies. Using the pod selector we specify the pods we want to apply the policies to.
 - Network Policies are `namespace` specify, not cluster wide.
 
+  ![image](https://github.com/user-attachments/assets/ab616c72-234f-4e81-a2f7-35a6892acc6c)
+
+
 ### Cilium Network Policy
 What’s Different with Cilium Network Policies?
 Cilium supports the standard Kubernetes Network Policy out of the box but extends it with additional features and flexibility using Cilium Network Policies. These policies enable fine-grained control at Layers 3, 4, and 7 of the OSI model, providing more advanced use cases.
@@ -64,6 +81,9 @@ Cilium introduces two custom resource definitions (CRDs):
 CiliumNetworkPolicy (namespaced)
 CiliumClusterwideNetworkPolicy (cluster-wide)
 These policies can define connectivity rules based on pod labels, IP/CIDR ranges, DNS names, specific ports, and Layer 7 protocols (e.g., HTTP, Kafka, gRPC). This gives you the ability to apply policies to single pods, groups of pods, namespaces, or the entire cluster.
+
+![image](https://github.com/user-attachments/assets/828310a9-7eaf-4163-b3cb-f4e085f6b638)
+
 
 Cilium also supports host-level policies, extending network security to the nodes themselves, such as blocking SSH access or ICMP pings. Combining Cilium’s network and cluster-wide policies allows for consistent and simplified security management across both pods and nodes.
 
